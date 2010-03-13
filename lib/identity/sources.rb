@@ -4,12 +4,16 @@ module Identity::Sources
   autoload :Github,  'identity/sources/github'
 
   class << self
-    def map
+    def all
       @sources ||= {
         'me'      => Me,
         'twitter' => Twitter,
         'github'  => Github
       }
+    end
+
+    def each(&block)
+      all.each(&block)
     end
   end
 end

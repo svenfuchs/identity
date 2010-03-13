@@ -4,7 +4,7 @@ module Identity::Sources
       def update(identity, url)
         identity.set_source('me', Identity.get(url))
 
-        Identity::Sources.map.each do |name, source| 
+        Identity::Sources.all.each do |name, source| 
           source.update(identity, identity.me[name]) if name != 'me' && identity.me[name]
         end if identity.me
       end

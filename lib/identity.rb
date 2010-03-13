@@ -4,35 +4,16 @@ require 'simply_stored/couch'
 require 'active_support/core_ext/time/conversions' # twitter4r implicitely uses to_formatted_s
 require 'active_support/core_ext/hash/keys'        # simply_stored implicitely uses assert_valid_keys
 
-
 class Identity
-  autoload :Sources, 'identity/sources'
+  autoload :Command,  'identity/command'
+  autoload :Listener, 'identity/listener'
+  autoload :Sources,  'identity/sources'
 
   include SimplyStored::Couch
 
   class << self
     def get(url)
       HTTParty.get(url)
-    end
-
-    def update(handle, message)
-      identity = find_by_handle(handle) || new
-      dispatch(identity, parse_args(message))
-      identity.save
-    end
-
-    def dispatch(identity, args)
-      args.each do |source, arg|
-        Sources.map[source].update(identity, arg) if Sources.map.key?(source) # queue this ...
-      end
-    end
-
-    def parse_args(string)
-      string.scan(/[^\s]+:[^\s]*/).inject({}) do |args, token|
-        ix = token.index(':')
-        args[token[0, ix]] = token[ix + 1..-1] if ix
-        args
-      end
     end
   end
 
@@ -56,7 +37,11 @@ class Identity
     @sources = sources
   end
 
-  Sources.map.keys.each do |name|
+  def update(args)
+    Sources.each { |name, source| source.update(self, args[name]) if args.key?(name) }
+  end
+
+  Sources.each do |name, source|
     define_method(name) { sources[name] || {} }
     define_method(:"#{name}=") { |source| sources[name] = source }
   end

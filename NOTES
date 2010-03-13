@@ -1,7 +1,7 @@
 Interfaces: Twitter, IM, E-Mail, Web
 
 Commands:
-  !join [sources]
+  # !join [sources]
   !update [sources]
   !remove [sources]
   !set role:[member|speaker|visitor|...] (default: member)

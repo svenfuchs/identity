@@ -10,14 +10,6 @@ module Identity::Sources
     }
 
     class << self
-      def handler(pattern, callback)
-        Twibot::Handler.new(pattern) do |message, args|
-          handle = message.sender.screen_name
-          text   = "twitter:#{handle} #{message.text}"
-          Identity.send(callback, handle, text) # queue this ...
-        end
-      end
-      
       def update(identity, handle)
         identity.set_source('twitter', fetch(handle)) if handle
       end
