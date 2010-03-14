@@ -1,11 +1,10 @@
-$: << File.expand_path('../', __FILE__)
 $: << File.expand_path('../../lib', __FILE__)
 
 require 'test/unit'
 require 'identity'
-require 'test_declarative'
 require 'mocha'
 require 'twibot'
+require File.expand_path('../test_declarative', __FILE__)
 
 CouchPotato::Config.database_name = "http://localhost:5984/identity"
 
@@ -17,7 +16,7 @@ class Test::Unit::TestCase
       'http://github.com/api/v2/json/user/show/svenfuchs'  => fixture('github.svenfuchs.json'),
       'http://github.com/api/v2/json/user/show/svenphoox'  => fixture('github.svenphoox.json')
     }
-    stubs.each { |url, json| HTTParty.stubs(:get).with(url).returns(JSON.parse(json)) }
+    stubs.each { |url, json| Identity::Sources::Base.stubs(:get).with(url).returns(JSON.parse(json)) }
   end
 
   def fixture(filename)

@@ -13,20 +13,3 @@ Sources:
   twitter:[handle]
   ...
 
-
-
-Command
-  parse
-  queue
-  dispatch
-
-Listener
-  Twitter
-    listen_for_replies
-
-Identity
-  Source
-    Twitter
-
-
-

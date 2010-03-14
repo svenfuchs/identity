@@ -17,7 +17,7 @@ class ListenerTwitterTest < Test::Unit::TestCase
   end
 
   def message(from, message)
-    Twitter::Message.new(:sender => sender(from), :text => message)
+    Twitter::Status.new(:user => sender(from), :text => message)
   end
 
   def sender(name)
@@ -27,6 +27,7 @@ class ListenerTwitterTest < Test::Unit::TestCase
   test 'updating w/ a me url and a github handle' do
     update!('svenfuchs', '#update me:http://tinyurl.com/yc7t8bv github:svenphoox')
     identity = Identity.find_by_handle('svenphoox')
+
     assert_equal 'svenphoox',  identity.github['handle']
     assert_equal 'Sven',       identity.github['name']
   end
