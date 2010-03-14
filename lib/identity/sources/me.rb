@@ -1,13 +1,11 @@
 module Identity::Sources
-  module Me
-    class << self
-      def update(identity, url)
-        identity.set_source('me', Identity.get(url))
+  class Me < Base
+    def update(identity, url)
+      identity.set_source('me', Base.get(url))
 
-        Identity::Sources.all.each do |name, source| 
-          source.update(identity, identity.me[name]) if name != 'me' && identity.me[name]
-        end if identity.me
-      end
+      Identity::Sources.each_without('me') do |name, source|
+        source.update(identity, identity.me[name]) if identity.me[name]
+      end if identity.me
     end
   end
 end

@@ -8,9 +8,9 @@ module HTTParty
       # avoid double query string on redirects [#12]
       unless @redirect
         query = query_string(new_uri)
-        new_uri.query = query unless query.empty?
+        new_uri.query = query unless query.nil? || query.empty?
       end
-      
+
       new_uri
     end
   end

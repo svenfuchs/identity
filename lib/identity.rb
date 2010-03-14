@@ -1,5 +1,4 @@
 require 'twibot'
-require 'httparty_fix'
 require 'simply_stored/couch'
 require 'active_support/core_ext/time/conversions' # twitter4r implicitely uses to_formatted_s
 require 'active_support/core_ext/hash/keys'        # simply_stored implicitely uses assert_valid_keys
@@ -10,12 +9,6 @@ class Identity
   autoload :Sources,  'identity/sources'
 
   include SimplyStored::Couch
-
-  class << self
-    def get(url)
-      HTTParty.get(url)
-    end
-  end
 
   # sanitize data ...
 
