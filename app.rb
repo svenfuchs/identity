@@ -1,5 +1,7 @@
+$: << File.expand_path('../lib', __FILE__)
 require 'rubygems'
 require 'sinatra'
+require 'identity'
 
 configure :production do
   CouchPotato::Config.database_name = ENV['couchdb_url']
