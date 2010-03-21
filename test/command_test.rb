@@ -44,17 +44,19 @@ class CommandTest < Test::Unit::TestCase
   end
 
   test 'updating adds a claimed_at time to source data when the source was first claimed' do
-    Time.stubs(:now).returns(Time.local(2010, 1, 1, 12, 0, 0))
-    claimed_at = Time.now
+    twitter_at = Time.local(2010, 1, 1, 12, 0, 0)
+    github_at  = Time.local(2010, 1, 2, 12, 0, 0)
+    Time.stubs(:now).returns(twitter_at)
+
     update!('svenfuchs', 'twitter:svenfuchs')
     identity = Identity.find_by_handle('svenfuchs')
-    assert_equal 'Fri, 01 Jan 2010 12:00:00 +0100', identity.twitter['claimed_at']
+    assert_equal twitter_at, Time.parse(identity.twitter['claimed_at'])
 
     Time.stubs(:now).returns(Time.local(2010, 1, 2, 12, 0, 0))
     update!('svenfuchs', 'github:svenfuchs')
     identity = Identity.find_by_handle('svenfuchs')
-    assert_equal 'Fri, 01 Jan 2010 12:00:00 +0100', identity.twitter['claimed_at']
-    assert_equal 'Sat, 02 Jan 2010 12:00:00 +0100', identity.github['claimed_at']
+    assert_equal twitter_at, Time.parse(identity.twitter['claimed_at'])
+    assert_equal github_at,  Time.parse(identity.github['claimed_at'])
   end
 
 end
