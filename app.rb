@@ -2,19 +2,14 @@ require 'rubygems'
 require 'sinatra'
 
 configure :production do
-  # Configure stuff here you'll want to only be run at Heroku at boot
+  CouchPotato::Config.database_name = ENV['couchdb_url']
 end
 
-get '/' do
-  "Congradulations!
-   You're running a Sinatra application on Heroku!"
-end
-
-get '/env' do
-  ENV.inspect
-end
-
-get '/ping' do # TODO should be post, should require some secret
-  
-  ENV.inspect
+# TODO should be post, should require some secret
+get '/ping' do
+  Identity::Poller::Twitter.new(:reply, /#update/, :update, {
+    :login    => ENV['admin_twitter_login'],
+    :password => ENV['admin_twitter_password'],
+    :process  => 10420650959 # TODO replace with last processed tweet id
+  }).run! && "ok"
 end

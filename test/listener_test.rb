@@ -11,9 +11,8 @@ class ListenerTwitterTest < Test::Unit::TestCase
 
   def update!(from, message)
     message  = message(from, message)
-    listener = Identity::Listener::Twitter.new
-    handler  = listener.handler(/#update/, :update)
-    handler.dispatch(message)
+    listener = Identity::Listener::Twitter.new(/#update/, :update)
+    listener.dispatch(message)
   end
 
   def message(from, message)

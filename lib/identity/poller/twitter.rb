@@ -6,7 +6,7 @@
 require 'twibot'
 
 class Identity::Poller::Twitter < Twibot::Bot
-  def initialize(options = {}, prompt = false)
+  def initialize(type, pattern, callback, options = {})
     # we're only interested in new replies
     raise "gotta set the :process => since_twitter_id option" unless options.key?(:process)
     
@@ -17,7 +17,7 @@ class Identity::Poller::Twitter < Twibot::Bot
     super(Twibot::Config.default << options) # Twibot::FileConfig.new
 
     # add a twitter handler
-    Identity::Listener::Twitter.new(self)
+    add_handler(type, Identity::Listener::Twitter.new(pattern, callback))
   end
 
   def receive_replies
