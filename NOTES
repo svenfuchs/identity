@@ -13,3 +13,11 @@ Sources:
   twitter:[handle]
   ...
 
+
+Twitter Bot on Heroku
+  POST to /ping
+  check twitter timeline for unprocessed replies since last ping - 1 min
+  process tweets
+  store processed tweet ids
+  store ping timestamp
+
