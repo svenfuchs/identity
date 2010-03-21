@@ -1,4 +1,5 @@
 # Twitter interface. Uses a Twibot to listen to Twitter replies.
+require 'twibot'
 
 class Identity::Listener::Twitter
   def initialize(bot = nil)
