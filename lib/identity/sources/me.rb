@@ -1,7 +1,7 @@
 module Identity::Sources
   class Me < Base
     def update(identity, url)
-      identity.set_source('me', Base.get(url))
+      identity.set_profile('me', Base.get(url))
 
       Identity::Sources.each_without('me') do |name, source|
         source.update(identity, identity.me[name]) if identity.me[name]

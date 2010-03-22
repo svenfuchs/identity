@@ -12,35 +12,36 @@ class Identity
 
   # sanitize data ...
 
-  property :sources
+  property :profiles
 
   view :by_handle, :key => :handle, :type => :custom, :map => <<-js
     function(doc) {
       if(doc.ruby_class && doc.ruby_class == 'Identity') {
-        for(name in doc['sources']) {
-          if(doc['sources'][name]['handle']) {
-            emit(doc['sources'][name]['handle'], doc);
+        for(name in doc['profiles']) {
+          if(doc['profiles'][name]['handle']) {
+            emit(doc['profiles'][name]['handle'], doc);
           }
         }
       }
     }
   js
 
-  def initialize(sources = {})
-    @sources = sources
+  def initialize(profiles = {})
+    @profiles = profiles
   end
 
-  def update(args)
-    Sources.each { |name, source| source.update(self, args[name]) if args.key?(name) }
+  Sources.each_name do |name|
+    define_method(name) { profiles[name] || {} }
+    define_method(:"#{name}=") { |profile| profiles[name] = profile }
+  end
+  
+  def claim
+    profiles.each { |name, profile| profile['claimed_at'] = Time.now unless profile['claimed_at'] }
   end
 
-  Sources.each do |name, source|
-    define_method(name) { sources[name] || {} }
-    define_method(:"#{name}=") { |source| sources[name] = source }
-  end
-
-  def set_source(name, data)
-    data['claimed_at'] = sources[name] ? send(name)['claimed_at'] : Time.now
-    sources[name] = data
+  def set_profile(name, profile)
+    claimed_at = send(name)['claimed_at']
+    profile.merge!('claimed_at' => claimed_at) if claimed_at
+    profiles[name] = profile
   end
 end

@@ -1,21 +1,32 @@
 class Identity::Command
-  attr_reader :command, :handle, :args
+  attr_reader :identity, :command, :args
 
   def initialize(command, handle, args)
-    @command = command
-    @handle  = handle
-    @args    = parse_args(args)
+    @identity = Identity.find_by_handle(handle) || Identity.new
+    @command  = normalize_command(command)
+    @args     = parse_args(args)
+  end
+  
+  def join
+    update
+  end
+  
+  def update
+    Identity::Sources.update_all(identity, args)
+    identity.claim
   end
 
   def queue
-    # would queue this somewhere
-    dispatch
+    dispatch # we don't have a queue yet, so just call
   end
 
   def dispatch
-    identity = Identity.find_by_handle(handle) || Identity.new
-    identity.send(command, args)
+    send(command)
     identity.save
+  end
+  
+  def normalize_command(command)
+    command == 'update' && !identity.created_at ? 'join' : command
   end
 
   def parse_args(string)

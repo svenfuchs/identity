@@ -16,7 +16,7 @@ module Identity::Sources
     end
 
     def update(identity, handle)
-      identity.set_source(name, fetch(url(handle))) if handle
+      identity.set_profile(name, fetch(url(handle))) if handle
     end
 
     def fetch(url)

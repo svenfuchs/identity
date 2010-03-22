@@ -9,15 +9,19 @@ module Identity::Sources
 
   class << self
     def all
-      @sources ||= {
-        'me'      => Me.new,
-        'twitter' => Twitter.new,
-        'github'  => Github.new
-      }
+      @sources ||= { 'me' => Me.new, 'twitter' => Twitter.new, 'github' => Github.new }
     end
-
+    
+    def update_all(identity, args)
+      each { |name, source| source.update(identity, args[name]) if args.key?(name) }
+    end
+    
     def each(&block)
       all.each(&block)
+    end
+    
+    def each_name(&block)
+      all.keys.each(&block)
     end
 
     def each_without(*names)

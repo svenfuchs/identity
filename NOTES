@@ -1,9 +1,9 @@
 Interfaces: Twitter, IM, E-Mail, Web
 
 Commands:
-  # !join [sources]
-  !update [sources]
-  !remove [sources]
+  # !join [profiles]
+  !update [profiles]
+  !remove [profiles]
   !set role:[member|speaker|visitor|...] (default: member)
   !set status:[away|...]
 
@@ -21,3 +21,9 @@ Twitter Bot on Heroku
   store processed tweet ids
   store ping timestamp
 
+
+@rugb !update         # add my identity
+@rugb !join           # join the group @rugb
+@rugb !visit          # visit
+
+@rugb !add svenfuchs  # add someone else
