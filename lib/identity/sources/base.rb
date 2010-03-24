@@ -20,7 +20,12 @@ module Identity::Sources
     end
 
     def fetch(url)
-      remap(Base.get(url))
+      data = Base.get(url)
+      p data
+      p data.class
+      data = JSON.parse(data) if data.is_a?(String)
+      data = remap(data) if map
+      data
     end
 
     def remap(data)
