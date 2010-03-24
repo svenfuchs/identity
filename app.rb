@@ -5,6 +5,11 @@ require 'identity'
 
 Dir[File.expand_path('../app/**/*', __FILE__)].each { |file| require file }
 
+# should be set through heroku config:add
+ENV['couchdb_url']      ||= 'http://localhost:5984'
+ENV['twitter_login']    ||= 'rugb_test'
+ENV['twitter_password'] ||= '...'
+
 configure :production do
   # CouchPotato::Config.database_name = ENV['couchdb_url']
 end

@@ -22,7 +22,7 @@ Twitter Bot on Heroku
   store ping timestamp
 
 
-@rugb !update         # add my identity
+@rugb !update         # add or update my identity
 @rugb !join           # join the group @rugb
 @rugb !visit          # visit
 

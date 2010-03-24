@@ -1,5 +1,3 @@
-ENV['couchdb_url'] ||= 'http://localhost:5984'
-
 # gotta hack a bit for http auth
 ENV['couchdb_url'] =~ /(.*)\/([^\/]*)$/
 couchdb_url, couchdb_name = $1, $2
