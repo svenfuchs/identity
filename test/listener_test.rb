@@ -7,16 +7,17 @@ class ListenerTwitterTest < Test::Unit::TestCase
 
   def teardown
     Identity.all.each { |identity| identity.delete }
+    Identity::Message.all.each { |message| message.delete }
   end
 
   def update!(from, message)
     message  = message(from, message)
-    listener = Identity::Listener::Twitter.new(/#update/, :update)
+    listener = Identity::Listener::Twitter.new('rugb_test', /#update/, :update)
     listener.dispatch(message)
   end
 
   def message(from, message)
-    Twitter::Status.new(:user => sender(from), :text => message)
+    Twitter::Status.new(:id => '12345', :user => sender(from), :text => message)
   end
 
   def sender(name)
@@ -29,6 +30,29 @@ class ListenerTwitterTest < Test::Unit::TestCase
 
     assert_equal 'svenphoox',  identity.github['handle']
     assert_equal 'Sven',       identity.github['name']
+  end
+
+  test 'logs processed messages' do
+    now = Time.now
+    Time.stubs(:now).returns(now)
+    
+    update!('svenfuchs', '#update')
+    Identity.find_by_handle('svenfuchs')
+    message = Identity::Message.find_by_message_id('12345')
+
+    assert_equal 'rugb_test', message.receiver
+    assert_equal 'svenfuchs', message.sender
+    assert_equal '#update',   message.text
+    assert_equal '12345',     message.message_id
+    assert_equal now.to_s,    Time.parse(message.received_at).to_s
+  end
+
+  test 'does not process an already processed message' do
+    update!('svenfuchs', '#update')
+    Identity.find_by_handle('svenfuchs')
+    
+    Identity::Command.expects(:new).never
+    Identity.find_by_handle('svenfuchs')
   end
 end
 

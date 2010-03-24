@@ -2,23 +2,13 @@
 require 'twibot'
 
 class Identity::Listener::Twitter < Twibot::Handler
-  # def initialize(bot = nil)
-  #   bot.add_handler(:reply, handler(/#update/, :update)) if bot
-  # end
-
-  def initialize(pattern, callback)
+  def initialize(receiver, pattern, callback)
     super(pattern) do |message, args|
-      handle = message.user.screen_name
-      text   = "twitter:#{handle} #{message.text}"
-      Identity::Command.new(callback, handle, text).queue
+      Identity::Message.if_unprocessed(receiver, message) do
+        sender = message.user.screen_name
+        text   = "twitter:#{sender} #{message.text}"
+        Identity::Command.new(callback, receiver, sender, text).queue
+      end
     end
   end
-
-  # def handler(pattern, callback)
-  #   Twibot::Handler.new(pattern) do |message, args|
-  #     handle = message.user.screen_name
-  #     text   = "twitter:#{handle} #{message.text}"
-  #     Identity::Command.new(callback, handle, text).queue
-  #   end
-  # end
 end

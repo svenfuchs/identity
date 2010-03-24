@@ -1,7 +1,4 @@
-# check twitter timeline for new replies
-# process replies
-# store processed tweet ids
-# store ping timestamp
+# checks for new replies only once
 
 require 'twibot'
 
@@ -17,7 +14,7 @@ class Identity::Poller::Twitter < Twibot::Bot
     super(Twibot::Config.default << options) # Twibot::FileConfig.new
 
     # add a twitter handler
-    add_handler(type, Identity::Listener::Twitter.new(pattern, callback))
+    add_handler(type, Identity::Listener::Twitter.new(options[:login], pattern, callback))
   end
 
   def receive_replies
