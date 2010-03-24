@@ -40,7 +40,7 @@ class Identity
   end
 
   def claim
-    profiles.each { |name, profile| profile['claimed_at'] = Time.now unless profile['claimed_at'] }
+    profiles.each { |name, profile| p profile; profile['claimed_at'] = Time.now unless profile['claimed_at'] }
   end
 
   def set_profile(name, profile)
