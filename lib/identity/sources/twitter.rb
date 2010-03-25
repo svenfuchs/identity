@@ -11,7 +11,11 @@ module Identity::Sources
       }
     end
     
-    def url(handle)
+    def profile_url(profile)
+      "http://twitter.com/#{profile['handle']}"
+    end
+    
+    def source_url(handle)
       "http://api.twitter.com/1/users/show/#{handle}.json"
     end
   end

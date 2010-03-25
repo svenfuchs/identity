@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <style>
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      #identities, .profiles {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      .identity {
+        clear: left;
+        margin-bottom: 1em;
+      }
+      h2, p {
+        font-size: 1em;
+        margin: 0;
+      }
+      .avatar {
+        float: left;
+        margin-right: 1em;
+      }
+   </style>
+</head>
+<body>
+  <ul id="identities">
+  <% identities.each do |identity| %>
+    <li class="identity">
+      <% if identity.avatar %>
+        <img class="avatar" src="<%= identity.avatar %>" />
+      <% end %>
+      <h2><%= identity.name %></h2>
+      <p><%= identity_links(identity).join(', ') %></p>
+    </li>
+  <% end %>
+  </ul>
+</body>
+</html>

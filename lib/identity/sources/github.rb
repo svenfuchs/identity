@@ -12,12 +12,16 @@ module Identity::Sources
       }
     end
 
-    def url(handle)
+    def profile_url(profile)
+      "http://github.com/#{profile['handle']}"
+    end
+    
+    def source_url(handle)
       "http://github.com/api/v2/json/user/show/#{handle}"
     end
 
-    def fetch(url)
-      remap(Base.get(url)['user'])
+    def fetch(source_url)
+      remap(Base.get(source_url)['user'])
     end
   end
 end

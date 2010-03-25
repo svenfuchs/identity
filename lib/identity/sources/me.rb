@@ -7,5 +7,9 @@ module Identity::Sources
         source.update(identity, identity.me[name]) if identity.me[name]
       end if identity.me
     end
+
+    def profile_url(profile)
+      profile['source_url']
+    end
   end
 end

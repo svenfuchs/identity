@@ -11,13 +11,6 @@ class PollerTest < Test::Unit::TestCase
     )
   end
   
-  def capture_stdout
-    @stdout, $stdout = $stdout, (io = StringIO.new)
-    yield
-    $stdout = @stdout
-    io.string
-  end
-  
   test "Poller::Twitter polls from twitter once and handles new replies by queueing commands" do
     config = { :login => 'svenfuchs', :process => 10623176300 }
     poller = Identity::Poller::Twitter.new(:reply, /#update/, :update, config)

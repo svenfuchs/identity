@@ -1,10 +1,6 @@
 require File.expand_path('../test_helper', __FILE__)
 
 class MessageTwitterTest < Test::Unit::TestCase
-  def teardown
-    # Identity::Message.all.each { |message| message.delete }
-  end
-
   def message(id, text = 'da message', sender = 'svenfuchs', receiver = 'rugb_test')
     Identity::Message.new :message_id  => id,
                           :text        => text,

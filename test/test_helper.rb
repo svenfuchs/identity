@@ -1,10 +1,13 @@
+$: << File.expand_path('../..', __FILE__)
 $: << File.expand_path('../../lib', __FILE__)
 
 require 'test/unit'
-require 'identity'
+require 'rack/test'
 require 'mocha'
 require 'twibot'
 require File.expand_path('../test_declarative', __FILE__)
+
+require 'identity'
 
 CouchPotato::Config.database_name = "http://localhost:5984/identity"
 
@@ -19,7 +22,31 @@ class Test::Unit::TestCase
     stubs.each { |url, json| Identity::Sources::Base.stubs(:get).with(url).returns(JSON.parse(json)) }
   end
 
+  def teardown
+    Identity.all.each { |identity| identity.delete }
+    Identity::Message.all.each { |message| message.delete }
+  end
+
   def fixture(filename)
     File.read(File.expand_path("../fixtures/#{filename}", __FILE__))
+  end
+
+  def command(command, receiver, sender, message)
+    Identity::Command.new(command, receiver, sender, message)
+  end
+
+  def status(from, message, id = '12345')
+    Twitter::Status.new(:id => id, :user => sender(from), :text => message)
+  end
+
+  def sender(name)
+    Twitter::User.new(:screen_name => name)
+  end
+  
+  def capture_stdout
+    @stdout, $stdout = $stdout, (io = StringIO.new)
+    yield
+    $stdout = @stdout
+    io.string
   end
 end

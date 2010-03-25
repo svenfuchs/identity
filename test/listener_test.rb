@@ -5,31 +5,18 @@ class ListenerTwitterTest < Test::Unit::TestCase
     setup_stubs
   end
 
-  def teardown
-    Identity.all.each { |identity| identity.delete }
-    Identity::Message.all.each { |message| message.delete }
-  end
-
   def update!(from, message, id = '12345')
-    message  = message(from, message, id)
+    status  = status(from, message, id)
     listener = Identity::Listener::Twitter.new('rugb_test', /#update/, :update)
-    listener.dispatch(message)
-  end
-
-  def message(from, message, id = '12345')
-    Twitter::Status.new(:id => id, :user => sender(from), :text => message)
-  end
-
-  def sender(name)
-    Twitter::User.new(:screen_name => name)
+    listener.dispatch(status)
   end
 
   test 'updating w/ a me url and a github handle' do
     update!('svenfuchs', '#update me:http://tinyurl.com/yc7t8bv github:svenphoox')
     identity = Identity.find_by_handle('svenphoox')
 
-    assert_equal 'svenphoox',  identity.github['handle']
-    assert_equal 'Sven',       identity.github['name']
+    assert_equal 'svenphoox', identity.github['handle']
+    assert_equal 'Sven',      identity.github['name']
   end
 
   test 'updating an existing profile' do

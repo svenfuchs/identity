@@ -17,6 +17,7 @@ class Identity::Command
   def update
     Identity::Sources.update_all(sender, args)
     sender.claim
+    sender.save
   end
 
   def queue

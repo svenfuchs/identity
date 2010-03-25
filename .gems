@@ -1,4 +1,5 @@
 sinatra
+rack-respond_to
 httparty
 mbbx6spp-twitter4r --source gems.github.com
 twibot

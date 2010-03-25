@@ -5,14 +5,6 @@ class CommandTest < Test::Unit::TestCase
     setup_stubs
   end
 
-  def teardown
-    Identity.all.each { |identity| identity.delete }
-  end
-
-  def command(command, receiver, sender, message)
-    Identity::Command.new(command, receiver, sender, message)
-  end
-
   test '#parse_args parses a message for foo:bar arguments' do
     cmd = command('update', 'rugb', 'svenfuchs', 'github:foo me:http://tinyurl.com/yc7t8bv')
     assert_equal cmd.args, {'github' => 'foo', 'me' => 'http://tinyurl.com/yc7t8bv'}

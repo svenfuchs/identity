@@ -5,7 +5,10 @@ module Identity::Sources
   class Base
     class << self
       def get(url)
-        HTTParty.get(url)
+        data = HTTParty.get(url)
+        data = JSON.parse(data) rescue {} if data.is_a?(String) # TODO somehow communicate parsing errors
+        data['source_url'] = url
+        data
       end
     end
 
@@ -16,14 +19,11 @@ module Identity::Sources
     end
 
     def update(identity, handle)
-      identity.set_profile(name, fetch(url(handle))) if handle
+      identity.set_profile(name, fetch(source_url(handle))) if handle
     end
 
     def fetch(url)
       data = Base.get(url)
-      p data
-      p data.class
-      data = JSON.parse(data) if data.is_a?(String)
       data = remap(data) if map
       data
     end
