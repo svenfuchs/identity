@@ -36,7 +36,7 @@ class Test::Unit::TestCase
   end
 
   def status(from, message, id = '12345')
-    Twitter::Status.new(:id => id, :user => sender(from), :text => message)
+    Twitter::Status.new(:id => id, :user => sender(from), :text => message, :created_at => Time.now)
   end
 
   def sender(name)

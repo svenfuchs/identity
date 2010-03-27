@@ -4,7 +4,6 @@ require 'active_support/core_ext/hash/keys'        # simply_stored implicitely u
 require 'couch_potato_namespace_fix'
 
 class Identity
-  autoload :Bot,      'identity/bot'
   autoload :Command,  'identity/command'
   autoload :Helpers,  'identity/helpers'
   autoload :Message,  'identity/message'
