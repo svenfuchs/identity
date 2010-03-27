@@ -1,29 +1,24 @@
 Interfaces: Twitter, IM, E-Mail, Web
 
 Commands:
-  # !join [profiles]
+  !join [profiles]
   !update [profiles]
   !remove [profiles]
-  !set role:[member|speaker|visitor|...] (default: member)
-  !set status:[away|...]
 
 Sources:
-  me:[url]
   github:[handle]
   twitter:[handle]
+  me:[url]
+  hcard:[url]
   ...
 
 
-Twitter Bot on Heroku
-  POST to /ping
-  check twitter timeline for unprocessed replies since last ping - 1 min
-  process tweets
-  store processed tweet ids
-  store ping timestamp
 
+@rugb !update [sources] # add or update my identity
+@rugb !remove           # remove my identity
 
-@rugb !update         # add or update my identity
-@rugb !join           # join the group @rugb
-@rugb !visit          # visit
-
-@rugb !add svenfuchs  # add someone else
+@rugb !join             # join the group @rugb
+@rugb !attend           # attend (?)
+@rugb !visit            # visit (?)
+                        
+@rugb !add svenfuchs    # add someone else

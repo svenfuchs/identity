@@ -1,7 +1,7 @@
 # Twitter interface. Uses a Twibot to listen to Twitter replies.
 require 'twibot'
 
-class Identity::Listener::Twitter < Twibot::Handler
+class Identity::Bot::Twitter < Twibot::Handler
   def initialize(receiver, pattern, callback)
     super(pattern) do |message, args|
       Identity::Message.if_unprocessed(receiver, message) do

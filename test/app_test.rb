@@ -21,7 +21,7 @@ class AppTest < Test::Unit::TestCase
   end
 
   test '/ping is runs a twitter poller' do
-    poller = Identity::Poller::Twitter.new(:reply, /#update/, :update, { :login => 'login', :process => 1 })
+    poller = Identity::Poller::Twitter.new(:reply, /!update/, :update, { :login => 'login', :process => 1 })
     Identity::Poller::Twitter.stubs(:new).returns(poller)
     poller.twitter.expects(:timeline_for).with(:replies, :since_id => 1).returns([status('rugb_test', '3update')])
 

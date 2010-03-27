@@ -10,6 +10,7 @@ class Identity::Command
   
   def join
     update unless sender.created_at
+    sender.groups ||= []
     sender.groups << receiver
     sender.save
   end

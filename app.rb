@@ -21,7 +21,6 @@ end
 
 get '/' do
   identities = Identity.all
-
   respond_to do |format|
     format.html { erb :identities, :locals => { :identities => identities } }
     format.json { identities.to_json }
@@ -30,7 +29,7 @@ end
 
 get '/ping' do
   protected!
-  Identity::Poller::Twitter.new(:reply, /#update/, :update, {
+  Identity::Poller::Twitter.new(:reply, /!update/, :update, {
     :login    => ENV['twitter_login'],
     :password => ENV['twitter_password'],
     :process  => Identity::Message.max_message_id || 10420650959

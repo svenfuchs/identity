@@ -22,7 +22,7 @@ class Identity::Message
 
   include SimplyStored::Couch
 
-  # sanitize data ...
+  # TODO gotta sanitize data ...
 
   property :message_id
   property :text

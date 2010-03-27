@@ -10,4 +10,4 @@ config = {
   # last processed tweet id
   :process  => 10420650959
 }
-Identity::Poller::Twitter.new(:reply, /#update/, :update, config).run!
+Identity::Poller::Twitter.new(:reply, /!update/, :update, config).run!

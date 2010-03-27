@@ -14,7 +14,7 @@ class Identity::Poller::Twitter < Twibot::Bot
     super(Twibot::Config.default << options) # Twibot::FileConfig.new
 
     # add a twitter handler
-    add_handler(type, Identity::Listener::Twitter.new(options[:login], pattern, callback))
+    add_handler(type, Identity::Bot::Twitter.new(options[:login], pattern, callback))
   end
 
   def receive_replies

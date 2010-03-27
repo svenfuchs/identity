@@ -13,12 +13,12 @@ class PollerTest < Test::Unit::TestCase
   
   test "Poller::Twitter polls from twitter once and handles new replies by queueing commands" do
     config = { :login => 'svenfuchs', :process => 10623176300 }
-    poller = Identity::Poller::Twitter.new(:reply, /#update/, :update, config)
+    poller = Identity::Poller::Twitter.new(:reply, /!update/, :update, config)
 
-    replies = [tweet('johndoe', '@svenfuchs #update')]
+    replies = [tweet('johndoe', '@svenfuchs !update')]
     poller.twitter.expects(:status).with(:replies, { :since_id => 10623176300 }).returns(replies)
     
-    args = [:update, 'svenfuchs', 'johndoe', 'twitter:johndoe @svenfuchs #update']
+    args = [:update, 'svenfuchs', 'johndoe', 'twitter:johndoe @svenfuchs !update']
     command = Identity::Command.new(*args)
     command.stubs(:queue)
     Identity::Command.expects(:new).with(*args).returns(command)

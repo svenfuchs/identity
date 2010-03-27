@@ -4,4 +4,4 @@ require 'twibot'
 
 CouchPotato::Config.database_name = "http://localhost:5984/rugb"
 
-bot.add_handler(:reply, Identity::Listener::Twitter.new('rugb', /#update/, :update))
+bot.add_handler(:reply, Identity::Bot::Twitter.new('rugb', /!update/, :update))

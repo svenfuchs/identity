@@ -4,16 +4,16 @@ require 'active_support/core_ext/hash/keys'        # simply_stored implicitely u
 require 'couch_potato_namespace_fix'
 
 class Identity
+  autoload :Bot,      'identity/bot'
   autoload :Command,  'identity/command'
   autoload :Helpers,  'identity/helpers'
   autoload :Message,  'identity/message'
-  autoload :Listener, 'identity/listener'
   autoload :Poller,   'identity/poller'
   autoload :Sources,  'identity/sources'
 
   include SimplyStored::Couch
 
-  # sanitize data ...
+  # TODO gotta sanitize data ...
 
   property :profiles
   property :groups
@@ -32,7 +32,6 @@ class Identity
 
   def initialize(profiles = {})
     @profiles = profiles
-    @groups = []
   end
 
   Sources.each_name do |name|
