@@ -11,6 +11,10 @@ module Identity::Sources
       }
     end
     
+    def recognize_url(url)
+      url =~ %r(http://twitter.com/([^/]*)) and $1
+    end
+
     def profile_url(profile)
       "http://twitter.com/#{profile['handle']}"
     end

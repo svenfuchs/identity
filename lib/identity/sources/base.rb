@@ -1,5 +1,6 @@
 require 'httparty'
 require 'httparty_fix'
+require 'active_support/core_ext/string/starts_ends_with'
 
 module Identity::Sources
   class Base
@@ -18,8 +19,14 @@ module Identity::Sources
       self.class.name.split('::').last.downcase
     end
 
-    def update(identity, handle)
-      identity.set_profile(name, fetch(source_url(handle))) if handle
+    def update(identity, handle, data = nil)
+      url = source_url(handle)
+      data ||= fetch(url)
+      identity.set_profile(name, data)
+    end
+
+    def recognize_url(url)
+      nil
     end
 
     def fetch(url)

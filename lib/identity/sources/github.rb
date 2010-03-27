@@ -1,3 +1,5 @@
+require 'active_support/core_ext/string/starts_ends_with'
+
 module Identity::Sources
   class Github < Base
     def initialize
@@ -10,6 +12,10 @@ module Identity::Sources
         'company'  => 'company',
         'gravatar' => 'gravatar_id'
       }
+    end
+    
+    def recognize_url(url)
+      url =~ %r(http://github.com/([^/]*)) and $1
     end
 
     def profile_url(profile)

@@ -30,11 +30,15 @@ class Identity::Command
     sender.save
   end
 
+  # def parse_args(string)
+  #   string.scan(/[^\s]+:[^\s]*/).inject({}) do |args, token|
+  #     ix = token.index(':')
+  #     args[token[0, ix]] = token[ix + 1..-1] if ix
+  #     args
+  #   end
+  # end
+
   def parse_args(string)
-    string.scan(/[^\s]+:[^\s]*/).inject({}) do |args, token|
-      ix = token.index(':')
-      args[token[0, ix]] = token[ix + 1..-1] if ix
-      args
-    end
+    string.scan(/[^\s]+:[^\s]*/)
   end
 end

@@ -31,7 +31,7 @@ class PollerTest < Test::Unit::TestCase
   end
 
   test 'updating w/ a me url and a github handle' do
-    update!('svenfuchs', '!update me:http://tinyurl.com/yc7t8bv github:svenphoox')
+    update!('svenfuchs', '!update json:http://tinyurl.com/yc7t8bv github:svenphoox')
     identity = Identity.find_by_handle('svenphoox')
 
     assert_equal 'svenphoox', identity.github['handle']
@@ -42,12 +42,12 @@ class PollerTest < Test::Unit::TestCase
     update!('svenfuchs', '!update github:svenphoox')
     assert !Identity.find_by_handle('svenphoox').nil?
 
-    update!('svenfuchs', '!update me:http://tinyurl.com/yc7t8bv', '12346')
+    update!('svenfuchs', '!update json:http://tinyurl.com/yc7t8bv', '12346')
     identity = Identity.find_by_handle('svenphoox')
 
     assert_equal 'svenphoox', identity.github['handle']
     assert_equal 'Sven',      identity.github['name']
-    assert_equal 'svenfuchs', identity.me['irc']
+    assert_equal 'svenfuchs', identity.json['irc']
   end
 
   test 'logs processed messages' do
