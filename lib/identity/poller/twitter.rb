@@ -16,7 +16,7 @@ class Identity::Poller::Twitter < Twibot::Bot
   end
 
   def handler(receiver)
-    Twibot::Handler.new('!([\w]+)') do |message, *args|
+    Twibot::Handler.new(Identity::Message::COMMAND_PATTERN) do |message, *args|
       Identity::Command.queue(receiver, 
         :receiver   => receiver,
         :message_id => message.id,
