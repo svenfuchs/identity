@@ -1,4 +1,4 @@
-require File.expand_path('../test_helper', __FILE__)
+require File.expand_path('../../test_helper', __FILE__)
 
 require 'app'
 
@@ -12,7 +12,7 @@ class AppTest < Test::Unit::TestCase
   end
 
   test '/ping is protected through http auth' do
-    Identity::Poller::Twitter.stubs(:new).returns(Object.new.tap { |o| o.stubs(:run!) })
+    Command::Poller::Twitter.stubs(:new).returns(Object.new.tap { |o| o.stubs(:run!) })
     authorized_get '/ping'
     assert_equal 200, last_response.status
 
@@ -21,9 +21,9 @@ class AppTest < Test::Unit::TestCase
   end
 
   test '/ping is runs a twitter poller' do
-    Identity::Message.stubs(:max_message_id).returns(12345)
-    poller = Identity::Poller::Twitter.new(:reply, 'login', 'password')
-    Identity::Poller::Twitter.stubs(:new).returns(poller)
+    Command::Message.stubs(:max_message_id).returns(12345)
+    poller = Command::Poller::Twitter.new(:reply, 'login', 'password')
+    Command::Poller::Twitter.stubs(:new).returns(poller)
     poller.twitter.expects(:timeline_for).with(:replies, :since_id => 12345).returns([twitter_status('svenfuchs', '!update')])
 
     log = capture_stdout { authorized_get '/ping' }

@@ -22,7 +22,7 @@ Sources:
 @rugb !join             # join the group @rugb
 @rugb !attend           # attend (?)
 @rugb !visit            # visit (?)
-                        
+
 @rugb !add svenfuchs    # add someone else
 
 

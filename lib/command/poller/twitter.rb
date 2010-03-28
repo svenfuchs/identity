@@ -2,12 +2,12 @@
 
 require 'twibot'
 
-class Identity::Poller::Twitter < Twibot::Bot
+class Command::Poller::Twitter < Twibot::Bot
   def initialize(type, login, password)
     super(Twibot::Config.default << {
       :login        => login, 
       :password     => password,
-      :process      => Identity::Message.max_message_id,
+      :process      => Command::Message.max_message_id,
       :min_interval => 0,
       :max_interval => 0
     })
@@ -16,8 +16,8 @@ class Identity::Poller::Twitter < Twibot::Bot
   end
 
   def handler(receiver)
-    Twibot::Handler.new(Identity::Message::COMMAND_PATTERN) do |message, *args|
-      Identity::Command.queue(receiver, 
+    Twibot::Handler.new(Command::Message::COMMAND_PATTERN) do |message, *args|
+      Command.queue(receiver,
         :receiver   => receiver,
         :message_id => message.id,
         :sender     => message.user.screen_name,
@@ -26,7 +26,7 @@ class Identity::Poller::Twitter < Twibot::Bot
       )
     end
   end
-
+  
   def receive_messages
     super.tap { @abort = true } # we only poll once
   end

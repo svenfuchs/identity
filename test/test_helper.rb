@@ -7,6 +7,7 @@ require 'mocha'
 require 'twibot'
 require File.expand_path('../test_declarative', __FILE__)
 
+require 'command'
 require 'identity'
 
 CouchPotato::Config.database_name = "http://localhost:5984/identity"
@@ -24,7 +25,7 @@ class Test::Unit::TestCase
 
   def teardown
     Identity.all.each { |identity| identity.delete }
-    Identity::Message.all.each { |message| message.delete }
+    Command::Message.all.each { |message| message.delete }
   end
 
   def response(filename)
@@ -32,16 +33,16 @@ class Test::Unit::TestCase
   end
 
   def command(type, receiver, sender, text = '', source = 'twitter')
-    Identity::Command.build(type, msg(12345, text, sender, receiver, source))
+    Command.new(type, msg(12345, text, sender, receiver, source))
   end
   
   def msg(id = 12345, text = 'text', sender = 'sender', receiver = 'receiver', source = 'twitter')
-    Identity::Message.create :message_id  => id,
-                             :text        => text,
-                             :sender      => sender,
-                             :receiver    => receiver,
-                             :source      => source,
-                             :received_at => Time.now
+    Command::Message.create :message_id  => id,
+                            :text        => text,
+                            :sender      => sender,
+                            :receiver    => receiver,
+                            :source      => source,
+                            :received_at => Time.now
   end
 
   def twitter_status(from, message, id = '12345')

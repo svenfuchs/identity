@@ -1,4 +1,4 @@
-require File.expand_path('../test_helper', __FILE__)
+require File.expand_path('../../test_helper', __FILE__)
 require 'stringio'
 
 class PollerTest < Test::Unit::TestCase
@@ -8,19 +8,19 @@ class PollerTest < Test::Unit::TestCase
 
   def process!(from, message, id = '12345')
     status = twitter_status(from, message, id)
-    bot = Identity::Poller::Twitter.new(:reply, 'rugb_test', 'password')
+    bot = Command::Poller::Twitter.new(:reply, 'rugb_test', 'password')
     bot.handler('rugb_test').dispatch(status)
   end
 
   test "polls from twitter once and handles new replies by queueing commands" do
-    Identity::Message.stubs(:max_message_id).returns(12345)
-    poller = Identity::Poller::Twitter.new(:reply, 'rugb_test', 'password')
+    Command::Message.stubs(:max_message_id).returns(12345)
+    poller = Command::Poller::Twitter.new(:reply, 'rugb_test', 'password')
 
     replies = [twitter_status('svenfuchs', '@rugb_test !update')]
     poller.twitter.expects(:status).with(:replies, { :since_id => 12345 }).returns(replies)
 
     message = { :message_id => '12345', :receiver => 'rugb_test', :sender => 'svenfuchs', :text => '@rugb_test !update', :source => 'twitter' }
-    Identity::Command.expects(:queue).with('rugb_test', message)
+    Command.expects(:queue).with('rugb_test', message)
     log = capture_stdout { poller.run! }
 
     assert_match /imposing as @rugb_test/, log
@@ -53,7 +53,7 @@ class PollerTest < Test::Unit::TestCase
 
     process!('svenfuchs', '!update')
     Identity.find_by_handle('svenfuchs')
-    message = Identity::Message.find_by_message_id('12345')
+    message = Command::Message.find_by_message_id('12345')
 
     assert_equal 'rugb_test', message.receiver
     assert_equal 'svenfuchs', message.sender
@@ -66,7 +66,7 @@ class PollerTest < Test::Unit::TestCase
     process!('svenfuchs', '!update')
     Identity.find_by_handle('svenfuchs')
 
-    Identity::Command.expects(:new).never
+    Command.expects(:new).never # TODO
     Identity.find_by_handle('svenfuchs')
   end
 

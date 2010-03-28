@@ -6,8 +6,6 @@ require 'couch_potato_namespace_fix'
 class Identity
   autoload :Command,  'identity/command'
   autoload :Helpers,  'identity/helpers'
-  autoload :Message,  'identity/message'
-  autoload :Poller,   'identity/poller'
   autoload :Sources,  'identity/sources'
 
   include SimplyStored::Couch
@@ -70,4 +68,8 @@ class Identity
   def to_json(*args)
     { :handles => handles, :profiles => profiles, :groups => groups, :created_at => created_at }.to_json
   end
+end
+
+class Command
+  include Identity::Command
 end

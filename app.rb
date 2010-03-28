@@ -1,6 +1,7 @@
 $: << File.expand_path('../lib', __FILE__)
 require 'rubygems'
 require 'sinatra'
+require 'command'
 require 'identity'
 
 # should be set through heroku config:add
@@ -29,6 +30,6 @@ end
 
 get '/ping' do
   protected!
-  poller = Identity::Poller::Twitter.new(:reply, ENV['twitter_login'], ENV['twitter_password'])
+  poller = Command::Poller::Twitter.new(:reply, ENV['twitter_login'], ENV['twitter_password'])
   poller.run!
 end

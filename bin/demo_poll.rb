@@ -8,4 +8,4 @@ config = {
   :login    => 'rugb_test', 
   :password => '...'
 }
-Identity::Poller::Twitter.new(:reply, /!update/, :update, config).run!
+Command::Poller::Twitter.new(:reply, /!update/, :update, config).run!

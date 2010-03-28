@@ -1,0 +1,46 @@
+h1. Identity
+
+Identity is an experimental spike at building a distributed identity aggregator. The current implementation is targeted at being used for the Ruby User Group Berlin's website. It hopefully will make it easy for speakers, members, visitors and generelly everybody interested in the group to publish information about themselves on the website.
+
+The general idea is to allow people to instruct a tiny Sinatra application to aggregate identity information through a messaging interface. Currently the only implemented interface uses Twitter replies but it's easy to imagine additional interfaces like IM, email and maybe others.
+
+In order to make the application work on Heroku it only sits there and waits for an http-authenticated ping. When pinged the application polls Twitter replies for a given account and responds to commands contained in these messages by aggregating profile information. It will store these identities to a remote CouchDB so it should be easy to share them with other projects.
+
+Let's say the Twitter account is \@rugb then the following replies will (currently) be recognized:
+
+  @rugb !create [profiles]
+  @rugb !update [profiles]
+  @rugb !join
+  
+The !create and !update commands fetch identity information from the given profile sources. The !create command is basically just an alias for !update except that it will always fetch information from Twitter.
+
+Valid sources are either full key/value pairs or URLs identifying a profile source. The following arguments would constitute valid profile sources:
+
+  twitter:svenfuchs
+  github:svenfuchs
+
+  http://twitter.com/svenfuchs
+  http://github.com/svenfuchs
+  http://svenfuchs.com/me.json # pointing to a json doc w/ profile information
+  http://tinyurl.com/yc7t8bv   # pointing to a json doc w/ profile information
+
+The !join command just adds the receiver account to a groups array for the given identity.
+
+Examples:
+
+  @rugb !update  # creates an identity for the sender if none exists and 
+                   retrieves and stores profile information from Twitter
+
+  @rugb !update http://svenfuchs.com/me.json # adds the json hash
+  
+  @rugb !join    # simply adds "rugb" to my groups
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

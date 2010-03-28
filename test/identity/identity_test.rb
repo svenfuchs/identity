@@ -1,4 +1,4 @@
-require File.expand_path('../test_helper', __FILE__)
+require File.expand_path('../../test_helper', __FILE__)
 
 class IdentityTest < Test::Unit::TestCase
   test "find_by_handle finds a single record that has the given handle in one of the sources" do
