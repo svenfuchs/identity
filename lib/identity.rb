@@ -30,12 +30,12 @@ class Identity
   js
 
   def initialize(profiles = {})
-    @profiles = profiles
+    self.profiles = profiles
   end
 
   Sources.each_name do |name|
     define_method(name) { profiles[name] || {} }
-    define_method(:"#{name}=") { |profile| profile[name] = profile }
+    define_method(:"#{name}=") { |profile| profiles[name] = profile }
   end
 
   def handles

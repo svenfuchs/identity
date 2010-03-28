@@ -19,8 +19,8 @@ module Identity::Sources
       self.class.name.split('::').last.downcase
     end
 
-    def update(identity, handle, data = nil)
-      url = source_url(handle)
+    def update(identity, arg, data = nil)
+      url = arg.starts_with?('http') ? arg : source_url(arg)
       data ||= fetch(url)
       identity.set_profile(name, data)
     end

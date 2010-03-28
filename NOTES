@@ -13,12 +13,18 @@ Sources:
   ...
 
 
-
-@rugb !update [sources] # add or update my identity
-@rugb !remove           # remove my identity
+@rugb !update github:svenfuchs twitter:svenfuchs    # add or update my identity
+@rugb !update http://github.com/svenfuchs           
+@rugb !update json:http://tinyurl.com/yc7t8bv
+@rugb !update http://gist.github.com/raw/327755/61ff4bd2ba34f41e097820adbb8a794713a31234/.me.json
+@rugb !remove                                       # remove my identity
 
 @rugb !join             # join the group @rugb
 @rugb !attend           # attend (?)
 @rugb !visit            # visit (?)
                         
 @rugb !add svenfuchs    # add someone else
+
+
+poller.register_commands :update, :join
+poller.register_timelines :reply, :message

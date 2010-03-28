@@ -5,65 +5,65 @@ class CommandTest < Test::Unit::TestCase
     setup_stubs
   end
 
-  test '#parse_args parses a message for foo:bar arguments' do
-    cmd = command('update', 'rugb', 'svenfuchs', 'github:foo json:http://tinyurl.com/yc7t8bv')
-    assert_equal(['github:foo', 'json:http://tinyurl.com/yc7t8bv'], cmd.args)
+  test '#arguments' do
+    cmd = command('create', 'rugb', 'svenfuchs', 'github:foo json:http://tinyurl.com/yc7t8bv')
+    assert_equal(['github:foo', 'json:http://tinyurl.com/yc7t8bv'], cmd.arguments)
 
-    cmd = command('update', 'rugb', 'svenfuchs', 'me foo')
-    assert_equal([], cmd.args)
+    cmd = command('create', 'rugb', 'svenfuchs', 'me foo')
+    assert_equal([], cmd.arguments)
   end
 
-  test 'updating w/ a twitter handle' do
-    command('update', 'rugb', 'svenfuchs', 'twitter:svenfuchs').dispatch
+  test 'creating w/ a twitter handle' do
+    command('create', 'rugb', 'svenfuchs', 'twitter:svenfuchs').dispatch
 
     identity = Identity.find_by_handle('svenfuchs')
     assert_equal 'svenfuchs',  identity.twitter['handle']
     assert_equal 'Berlin',     identity.twitter['location']
   end
 
-  test 'updating w/ a github handle' do
-    command('update', 'rugb', 'svenfuchs', 'github:svenfuchs').dispatch
+  test 'creating w/ a github handle' do
+    command('create', 'rugb', 'svenfuchs', 'github:svenfuchs').dispatch
 
     identity = Identity.find_by_handle('svenfuchs')
-    assert_equal 'svenfuchs',  identity.github['handle']
+    assert_equal 'svenfuchs', identity.github['handle']
   end
 
-  test 'updating w/ a json url' do
-    command('update', 'rugb', 'svenfuchs', 'json:http://tinyurl.com/yc7t8bv').dispatch
+  test 'creating w/ a json url' do
+    command('create', 'rugb', 'svenfuchs', 'json:http://tinyurl.com/yc7t8bv').dispatch
 
     identity = Identity.find_by_handle('svenphoox')
-    assert_equal 'svenphoox',  identity.github['handle']
-    assert_equal 'Sven',       identity.github['name']
+    assert_equal 'svenphoox', identity.github['handle']
+    assert_equal 'Sven',      identity.github['name']
   end
 
-  test 'updating w/ a github url' do
-    command('update', 'rugb', 'svenfuchs', 'http://github.com/svenfuchs').dispatch
+  test 'creating w/ a github url' do
+    command('create', 'rugb', 'svenfuchs', 'http://github.com/svenfuchs').dispatch
 
     identity = Identity.find_by_handle('svenfuchs')
-    assert_equal 'svenfuchs',  identity.github['handle']
+    assert_equal 'svenfuchs', identity.github['handle']
   end
 
-  test 'updating w/ a twitter url' do
-    command('update', 'rugb', 'svenfuchs', 'http://twitter.com/svenfuchs').dispatch
+  test 'creating w/ a twitter url' do
+    command('create', 'rugb', 'svenfuchs', 'http://twitter.com/svenfuchs').dispatch
 
     identity = Identity.find_by_handle('svenfuchs')
-    assert_equal 'svenfuchs',  identity.twitter['handle']
+    assert_equal 'svenfuchs', identity.twitter['handle']
   end
 
-  test 'updating w/ a url returning json' do
-    command('update', 'rugb', 'svenfuchs', 'http://tinyurl.com/yc7t8bv').dispatch
+  test 'creating w/ a url returning json' do
+    command('create', 'rugb', 'svenfuchs', 'http://tinyurl.com/yc7t8bv').dispatch
 
     identity = Identity.find_by_handle('svenphoox')
-    assert_equal 'svenphoox',  identity.github['handle']
-    assert_equal 'Sven',       identity.github['name']
+    assert_equal 'svenphoox', identity.github['handle']
+    assert_equal 'Sven',      identity.github['name']
   end
 
-  test 'updating adds a claimed_at time to source data when the source was first claimed' do
+  test 'creating adds a claimed_at time to source data when the source was first claimed' do
     twitter_at = Time.local(2010, 1, 1, 12, 0, 0)
     github_at  = Time.local(2010, 1, 2, 12, 0, 0)
     Time.stubs(:now).returns(twitter_at)
 
-    command('update', 'rugb', 'svenfuchs', 'twitter:svenfuchs').dispatch
+    command('create', 'rugb', 'svenfuchs', 'twitter:svenfuchs').dispatch
     identity = Identity.find_by_handle('svenfuchs')
     assert_equal twitter_at, Time.parse(identity.twitter['claimed_at'])
 
@@ -75,6 +75,7 @@ class CommandTest < Test::Unit::TestCase
   end
 
   test 'joining a group' do
+    command('create', 'rugb', 'svenfuchs').dispatch
     command('join', 'rugb', 'svenfuchs', 'twitter:svenfuchs').dispatch
 
     identity = Identity.find_by_handle('svenfuchs')

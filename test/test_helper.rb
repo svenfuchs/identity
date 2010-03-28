@@ -14,10 +14,10 @@ CouchPotato::Config.database_name = "http://localhost:5984/identity"
 class Test::Unit::TestCase
   def setup_stubs
     stubs = {
-      'http://tinyurl.com/yc7t8bv'                         => fixture('me.svenfuchs.json'),
-      'http://api.twitter.com/1/users/show/svenfuchs.json' => fixture('twitter.svenfuchs.json'),
-      'http://github.com/api/v2/json/user/show/svenfuchs'  => fixture('github.svenfuchs.json'),
-      'http://github.com/api/v2/json/user/show/svenphoox'  => fixture('github.svenphoox.json')
+      'http://tinyurl.com/yc7t8bv'                         => response('me.svenfuchs.json'),
+      'http://api.twitter.com/1/users/show/svenfuchs.json' => response('twitter.svenfuchs.json'),
+      'http://github.com/api/v2/json/user/show/svenfuchs'  => response('github.svenfuchs.json'),
+      'http://github.com/api/v2/json/user/show/svenphoox'  => response('github.svenphoox.json')
     }
     stubs.each { |url, json| Identity::Sources::Base.stubs(:get).with(url).returns(JSON.parse(json)) }
   end
@@ -27,19 +27,28 @@ class Test::Unit::TestCase
     Identity::Message.all.each { |message| message.delete }
   end
 
-  def fixture(filename)
-    File.read(File.expand_path("../fixtures/#{filename}", __FILE__))
+  def response(filename)
+    File.read(File.expand_path("../stubs/#{filename}", __FILE__))
   end
 
-  def command(command, receiver, sender, message)
-    Identity::Command.new(command, receiver, sender, message)
+  def command(type, receiver, sender, text = '', source = 'twitter')
+    Identity::Command.build(type, msg(12345, text, sender, receiver, source))
+  end
+  
+  def msg(id = 12345, text = 'text', sender = 'sender', receiver = 'receiver', source = 'twitter')
+    Identity::Message.create :message_id  => id,
+                             :text        => text,
+                             :sender      => sender,
+                             :receiver    => receiver,
+                             :source      => source,
+                             :received_at => Time.now
   end
 
-  def status(from, message, id = '12345')
-    Twitter::Status.new(:id => id, :user => sender(from), :text => message, :created_at => Time.now)
+  def twitter_status(from, message, id = '12345')
+    Twitter::Status.new(:id => id, :user => twitter_sender(from), :text => message, :created_at => Time.now)
   end
 
-  def sender(name)
+  def twitter_sender(name)
     Twitter::User.new(:screen_name => name)
   end
   

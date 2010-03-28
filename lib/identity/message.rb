@@ -1,14 +1,8 @@
 class Identity::Message
   class << self
-    def if_unprocessed(receiver, message)
-      raise 'message.id is nil' unless message.id
-      return if find_by_message_id(message.id)
-      yield
-      create :message_id  => message.id,
-             :text        => message.text,
-             :sender      => message.user.screen_name,
-             :receiver    => receiver,
-             :received_at => Time.now
+    def if_unprocessed(data)
+      return if find_by_message_id(data[:message_id])
+      yield create(data.merge(:received_at => Time.now))
     end
 
     def max_message_id # TODO how the fuck would i not jump through all of these
@@ -19,6 +13,9 @@ class Identity::Message
       result['value'] if result
     end
   end
+  
+  COMMAND_PATTERN  = /(?:!|#)([\w]+)/
+  ARGUMENT_PATTERN = /[\S]+:[\S]+/
 
   include SimplyStored::Couch
 
@@ -28,6 +25,7 @@ class Identity::Message
   property :text
   property :sender
   property :receiver
+  property :source
   property :received_at
 
   view :by_message_id, :key => :message_id
@@ -37,5 +35,13 @@ class Identity::Message
 
   def initialize(data = {})
     data.each { |key, value| self.send("#{key}=", value) }
+  end
+  
+  def commands
+    text.scan(COMMAND_PATTERN).flatten
+  end
+
+  def arguments
+    text.scan(ARGUMENT_PATTERN)
   end
 end

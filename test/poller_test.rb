@@ -6,32 +6,29 @@ class PollerTest < Test::Unit::TestCase
     setup_stubs
   end
 
-  def update!(from, message, id = '12345')
-    status  = status(from, message, id)
-    bot = Identity::Poller::Twitter.new(:reply, /!update/, :update, :login => 'rugb_test', :process => 10623176300)
-    bot.handler.dispatch(status)
+  def process!(from, message, id = '12345')
+    status = twitter_status(from, message, id)
+    bot = Identity::Poller::Twitter.new(:reply, 'rugb_test', 'password')
+    bot.handler('rugb_test').dispatch(status)
   end
 
   test "polls from twitter once and handles new replies by queueing commands" do
-    config = { :login => 'svenfuchs', :process => 10623176300 }
-    poller = Identity::Poller::Twitter.new(:reply, /!update/, :update, config)
+    Identity::Message.stubs(:max_message_id).returns(12345)
+    poller = Identity::Poller::Twitter.new(:reply, 'rugb_test', 'password')
 
-    replies = [status('johndoe', '@svenfuchs !update')]
-    poller.twitter.expects(:status).with(:replies, { :since_id => 10623176300 }).returns(replies)
+    replies = [twitter_status('svenfuchs', '@rugb_test !update')]
+    poller.twitter.expects(:status).with(:replies, { :since_id => 12345 }).returns(replies)
 
-    args = [:update, 'svenfuchs', 'johndoe', 'twitter:johndoe @svenfuchs !update']
-    command = Identity::Command.new(*args)
-    command.stubs(:queue)
-    Identity::Command.expects(:new).with(*args).returns(command)
-
+    message = { :message_id => '12345', :receiver => 'rugb_test', :sender => 'svenfuchs', :text => '@rugb_test !update', :source => 'twitter' }
+    Identity::Command.expects(:queue).with('rugb_test', message)
     log = capture_stdout { poller.run! }
 
-    assert_match /imposing as @svenfuchs/, log
+    assert_match /imposing as @rugb_test/, log
     assert_match /Received 1 reply/, log
   end
 
   test 'updating w/ a me url and a github handle' do
-    update!('svenfuchs', '!update json:http://tinyurl.com/yc7t8bv github:svenphoox')
+    process!('svenfuchs', '!update json:http://tinyurl.com/yc7t8bv github:svenphoox')
     identity = Identity.find_by_handle('svenphoox')
 
     assert_equal 'svenphoox', identity.github['handle']
@@ -39,22 +36,22 @@ class PollerTest < Test::Unit::TestCase
   end
 
   test 'updating an existing profile' do
-    update!('svenfuchs', '!update github:svenphoox')
-    assert !Identity.find_by_handle('svenphoox').nil?
+    process!('svenfuchs', '!create', '12345')
+    assert Identity.find_by_handle('svenfuchs')
 
-    update!('svenfuchs', '!update json:http://tinyurl.com/yc7t8bv', '12346')
-    identity = Identity.find_by_handle('svenphoox')
+    process!('svenfuchs', '!update json:http://tinyurl.com/yc7t8bv', '12346')
+    identity = Identity.find_by_handle('svenfuchs')
 
-    assert_equal 'svenphoox', identity.github['handle']
-    assert_equal 'Sven',      identity.github['name']
-    assert_equal 'svenfuchs', identity.json['irc']
+    assert_equal 'svenfuchs',  identity.twitter['handle']
+    assert_equal 'Sven Fuchs', identity.twitter['name']
+    assert_equal 'svenfuchs',  identity.json['irc']
   end
 
   test 'logs processed messages' do
     now = Time.now
     Time.stubs(:now).returns(now)
 
-    update!('svenfuchs', '!update')
+    process!('svenfuchs', '!update')
     Identity.find_by_handle('svenfuchs')
     message = Identity::Message.find_by_message_id('12345')
 
@@ -66,7 +63,7 @@ class PollerTest < Test::Unit::TestCase
   end
 
   test 'does not process an already processed message' do
-    update!('svenfuchs', '!update')
+    process!('svenfuchs', '!update')
     Identity.find_by_handle('svenfuchs')
 
     Identity::Command.expects(:new).never

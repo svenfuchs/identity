@@ -1,10 +1,4 @@
 module Identity::Helpers
-  def identity_link_or_name(identity)
-    identity.url ?
-      %(<a class="name" href="#{identity.url}">#{identity.name}</a>) :
-      %(<span class="name">#{identity.name}</span>)
-  end
-
   def identity_links(identity)
     links = [identity_link(identity)] + profile_links(identity)
     links.compact

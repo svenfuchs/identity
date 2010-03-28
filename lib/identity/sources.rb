@@ -34,8 +34,8 @@ module Identity::Sources
       each { |name, source| yield(name, source) unless names.include?(name) }
     end
 
-    def update_all(identity, args)
-      args.each { |arg| arg.starts_with?('http://') ? update_url(identity, arg) : update_named(identity, arg) }
+    def update_all(identity, arguments)
+      arguments.each { |arg| arg.starts_with?('http://') ? update_url(identity, arg) : update_named(identity, arg) }
     end
     
     def update_url(identity, url)

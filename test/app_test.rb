@@ -21,9 +21,10 @@ class AppTest < Test::Unit::TestCase
   end
 
   test '/ping is runs a twitter poller' do
-    poller = Identity::Poller::Twitter.new(:reply, /!update/, :update, { :login => 'login', :process => 1 })
+    Identity::Message.stubs(:max_message_id).returns(12345)
+    poller = Identity::Poller::Twitter.new(:reply, 'login', 'password')
     Identity::Poller::Twitter.stubs(:new).returns(poller)
-    poller.twitter.expects(:timeline_for).with(:replies, :since_id => 1).returns([status('rugb_test', '3update')])
+    poller.twitter.expects(:timeline_for).with(:replies, :since_id => 12345).returns([twitter_status('svenfuchs', '!update')])
 
     log = capture_stdout { authorized_get '/ping' }
 
@@ -33,7 +34,7 @@ class AppTest < Test::Unit::TestCase
   
   test '/ responding to :html' do
     setup_stubs
-    command('update', 'rugb', 'svenfuchs', 'twitter:svenfuchs github:svenphoox').dispatch
+    command('create', 'rugb', 'svenfuchs', 'twitter:svenfuchs github:svenphoox').dispatch
     get '/'
 
     assert_equal 'text/html', last_response['Content-Type']

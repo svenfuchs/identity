@@ -29,9 +29,6 @@ end
 
 get '/ping' do
   protected!
-  Identity::Poller::Twitter.new(:reply, /!update/, :update, {
-    :login    => ENV['twitter_login'],
-    :password => ENV['twitter_password'],
-    :process  => Identity::Message.max_message_id || 10420650959
-  }).run!
+  poller = Identity::Poller::Twitter.new(:reply, ENV['twitter_login'], ENV['twitter_password'])
+  poller.run!
 end
