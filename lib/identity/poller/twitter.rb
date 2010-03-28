@@ -4,15 +4,13 @@ require 'twibot'
 
 class Identity::Poller::Twitter < Twibot::Bot
   def initialize(type, login, password)
-    # we only poll once, so we don't want an interval
-    options = { 
+    super(Twibot::Config.default << {
       :login        => login, 
       :password     => password,
-      :min_interval => 0, 
-      :max_interval => 0,
-      :process      => Identity::Message.max_message_id
-    }
-    super(Twibot::Config.default << options)
+      :process      => Identity::Message.max_message_id,
+      :min_interval => 0,
+      :max_interval => 0
+    })
 
     add_handler(type, handler(login))
   end
@@ -29,8 +27,11 @@ class Identity::Poller::Twitter < Twibot::Bot
     end
   end
 
+  def receive_messages
+    super.tap { @abort = true } # we only poll once
+  end
+
   def receive_replies
-    # abort after having received stuff once
-    super.tap { @abort = true }
+    super.tap { @abort = true } # we only poll once
   end
 end

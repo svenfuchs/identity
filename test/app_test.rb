@@ -22,14 +22,14 @@ class AppTest < Test::Unit::TestCase
 
   test '/ping is runs a twitter poller' do
     Identity::Message.stubs(:max_message_id).returns(12345)
-    poller = Identity::Poller::Twitter.new(:reply, 'login', 'password')
+    poller = Identity::Poller::Twitter.new(:message, 'login', 'password')
     Identity::Poller::Twitter.stubs(:new).returns(poller)
-    poller.twitter.expects(:timeline_for).with(:replies, :since_id => 12345).returns([twitter_status('svenfuchs', '!update')])
+    poller.twitter.expects(:messages).with(:received, :since_id => 12345).returns([twitter_status('svenfuchs', '!update')])
 
     log = capture_stdout { authorized_get '/ping' }
 
     assert_match /imposing as @login/, log
-    assert_match /Received 1 reply/, log
+    assert_match /Received 1 message/, log
   end
   
   test '/ responding to :html' do
