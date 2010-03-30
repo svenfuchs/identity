@@ -1,3 +1,7 @@
+require 'rubygems'
+require 'bundler'
+Bundler.setup
+
 $: << File.expand_path('../..', __FILE__)
 $: << File.expand_path('../../lib', __FILE__)
 
@@ -32,8 +36,10 @@ class Test::Unit::TestCase
     File.read(File.expand_path("../stubs/#{filename}", __FILE__))
   end
 
-  def command(type, receiver, sender, text = '', source = 'twitter')
-    Command.new(type, msg(12345, text, sender, receiver, source))
+  def command(receiver, sender, text = '', source = 'twitter')
+    message = msg(12345, text, sender, receiver, source)
+    command, args = *message.parse.first
+    Identity::Command.new(command, args, message)
   end
   
   def msg(id = 12345, text = 'text', sender = 'sender', receiver = 'receiver', source = 'twitter')

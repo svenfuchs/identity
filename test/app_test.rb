@@ -34,7 +34,7 @@ class AppTest < Test::Unit::TestCase
   
   test '/ responding to :html' do
     setup_stubs
-    command('create', 'rugb', 'svenfuchs', 'twitter:svenfuchs github:svenphoox').dispatch
+    command('rugb', 'svenfuchs', '!create twitter:svenfuchs github:svenphoox').run
     get '/'
 
     assert_equal 'text/html', last_response['Content-Type']

@@ -6,15 +6,15 @@ class CommandTest < Test::Unit::TestCase
   end
 
   test '#arguments' do
-    cmd = command('create', 'rugb', 'svenfuchs', 'github:foo json:http://tinyurl.com/yc7t8bv')
-    assert_equal(['github:foo', 'json:http://tinyurl.com/yc7t8bv'], cmd.arguments)
+    cmd = command('rugb', 'svenfuchs', '!create github:foo json:http://tinyurl.com/yc7t8bv')
+    assert_equal(['github:foo', 'json:http://tinyurl.com/yc7t8bv'], cmd.args)
 
-    cmd = command('create', 'rugb', 'svenfuchs', 'me foo')
-    assert_equal([], cmd.arguments)
+    cmd = command('rugb', 'svenfuchs', '!create me foo')
+    assert_equal([], cmd.args)
   end
 
   test 'creating w/ a twitter handle' do
-    command('create', 'rugb', 'svenfuchs', 'twitter:svenfuchs').dispatch
+    command('rugb', 'svenfuchs', '!create twitter:svenfuchs').run
 
     identity = Identity.find_by_handle('svenfuchs')
     assert_equal 'svenfuchs',  identity.twitter['handle']
@@ -22,14 +22,14 @@ class CommandTest < Test::Unit::TestCase
   end
 
   test 'creating w/ a github handle' do
-    command('create', 'rugb', 'svenfuchs', 'github:svenfuchs').dispatch
+    command('rugb', 'svenfuchs', '!create github:svenfuchs').run
 
     identity = Identity.find_by_handle('svenfuchs')
     assert_equal 'svenfuchs', identity.github['handle']
   end
 
   test 'creating w/ a json url' do
-    command('create', 'rugb', 'svenfuchs', 'json:http://tinyurl.com/yc7t8bv').dispatch
+    command('rugb', 'svenfuchs', '!create json:http://tinyurl.com/yc7t8bv').run
 
     identity = Identity.find_by_handle('svenphoox')
     assert_equal 'svenphoox', identity.github['handle']
@@ -37,21 +37,21 @@ class CommandTest < Test::Unit::TestCase
   end
 
   test 'creating w/ a github url' do
-    command('create', 'rugb', 'svenfuchs', 'http://github.com/svenfuchs').dispatch
+    command('rugb', 'svenfuchs', '!create http://github.com/svenfuchs').run
 
     identity = Identity.find_by_handle('svenfuchs')
     assert_equal 'svenfuchs', identity.github['handle']
   end
 
   test 'creating w/ a twitter url' do
-    command('create', 'rugb', 'svenfuchs', 'http://twitter.com/svenfuchs').dispatch
+    command('rugb', 'svenfuchs', '!create http://twitter.com/svenfuchs').run
 
     identity = Identity.find_by_handle('svenfuchs')
     assert_equal 'svenfuchs', identity.twitter['handle']
   end
 
   test 'creating w/ a url returning json' do
-    command('create', 'rugb', 'svenfuchs', 'http://tinyurl.com/yc7t8bv').dispatch
+    command('rugb', 'svenfuchs', '!create http://tinyurl.com/yc7t8bv').run
 
     identity = Identity.find_by_handle('svenphoox')
     assert_equal 'svenphoox', identity.github['handle']
@@ -63,20 +63,20 @@ class CommandTest < Test::Unit::TestCase
     github_at  = Time.local(2010, 1, 2, 12, 0, 0)
     Time.stubs(:now).returns(twitter_at)
 
-    command('create', 'rugb', 'svenfuchs', 'twitter:svenfuchs').dispatch
+    command('rugb', 'svenfuchs', '!create twitter:svenfuchs').run
     identity = Identity.find_by_handle('svenfuchs')
     assert_equal twitter_at, Time.parse(identity.twitter['claimed_at'])
 
     Time.stubs(:now).returns(Time.local(2010, 1, 2, 12, 0, 0))
-    command('update', 'rugb', 'svenfuchs', 'github:svenfuchs').dispatch
+    command('rugb', 'svenfuchs', '!create github:svenfuchs').run
     identity = Identity.find_by_handle('svenfuchs')
     assert_equal twitter_at, Time.parse(identity.twitter['claimed_at'])
     assert_equal github_at,  Time.parse(identity.github['claimed_at'])
   end
 
   test 'joining a group' do
-    command('create', 'rugb', 'svenfuchs').dispatch
-    command('join', 'rugb', 'svenfuchs', 'twitter:svenfuchs').dispatch
+    command('rugb', 'svenfuchs', '!create').run
+    command('rugb', 'svenfuchs', '!join').run #  twitter:svenfuchs
 
     identity = Identity.find_by_handle('svenfuchs')
     assert identity.groups.include?('rugb')

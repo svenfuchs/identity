@@ -1,27 +1,30 @@
-module Identity::Command
-  def initialize(command, message)
+class Identity::Command < Command
+  def initialize(command, args, message)
     super
     @command = :create if command = :update && sender.created_at.nil?
   end
   
+  desc 'create [sources]', 'create your identity'
   def create
-    arguments << "#{message.source}:#{message.sender}" # i.e. on create we always pull the source's profile (e.g. twitter)
-    arguments.uniq!
+    args << "#{message.source}:#{message.sender}" # i.e. on create we always pull the source's profile (e.g. twitter)
+    args.uniq!
     update
   end
 
-  def join
-    sender.groups ||= []
-    sender.groups << receiver
-    sender.save
-  end
-
+  desc 'update [sources]', 'update from all or given sources'
   def update
-    Identity::Sources.update_all(sender, arguments)
+    Identity::Sources.update_all(sender, args)
     sender.claim
     sender.save
   end
   
+  desc 'join', 'join this group'
+  def join
+    sender.groups ||= []
+    sender.groups << message.receiver
+    sender.save
+  end
+
   protected
     
     def sender

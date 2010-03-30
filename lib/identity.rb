@@ -69,7 +69,9 @@ class Identity
     { :handles => handles, :profiles => profiles, :groups => groups, :created_at => created_at }.to_json
   end
 end
+# 
+# class Command
+#   include Identity::Command
+# end
+require 'identity/command'
 
-class Command
-  include Identity::Command
-end
