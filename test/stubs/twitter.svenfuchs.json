@@ -27,5 +27,6 @@
   "lang":"en",
   "statuses_count":2030,
   "profile_background_image_url":"http://s.twimg.com/a/1268179522/images/themes/theme1/bg.png",
-  "utc_offset":3600
+  "utc_offset":3600,
+  "source_url":"http://api.twitter.com/1/users/show/svenfuchs.json"
 }

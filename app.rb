@@ -1,13 +1,15 @@
 $: << File.expand_path('../lib', __FILE__)
 require 'rubygems'
 require 'sinatra'
+
 require 'command'
 require 'identity'
+require 'identity/command'
 
 # should be set through heroku config:add
 ENV['couchdb_url']      ||= 'http://localhost:5984/rugb'
 ENV['twitter_login']    ||= 'rugb_test'
-ENV['twitter_password'] ||= 'clubmate'
+ENV['twitter_password'] ||= 'password'
 
 Dir[File.expand_path('../app/**/*', __FILE__)].each { |file| require file }
 

@@ -33,7 +33,7 @@ class Identity
 
   Sources.each_name do |name|
     define_method(name) { profiles[name] || {} }
-    define_method(:"#{name}=") { |profile| profiles[name] = profile }
+    define_method(:"#{name}=") { |profile| set_profile(name, profile) }
   end
 
   def handles
@@ -55,7 +55,7 @@ class Identity
     @name ||= profiles.map { |name, profile| profile['name'] }.compact.first
   end
 
-  def claim
+  def claim_unclaimed
     profiles.each { |name, profile| profile['claimed_at'] = Time.now unless profile['claimed_at'] }
   end
 
@@ -69,9 +69,3 @@ class Identity
     { :handles => handles, :profiles => profiles, :groups => groups, :created_at => created_at }.to_json
   end
 end
-# 
-# class Command
-#   include Identity::Command
-# end
-require 'identity/command'
-

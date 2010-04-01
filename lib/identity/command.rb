@@ -13,8 +13,9 @@ class Identity::Command < Command
 
   desc 'update [sources]', 'update from all or given sources'
   def update
+    self.args = sender.profiles.map { |name, profile| Identity::Sources[name].profile_url(profile['handle']) } if args.empty?
     Identity::Sources.update_all(sender, args)
-    sender.claim
+    sender.claim_unclaimed
     sender.save
   end
   

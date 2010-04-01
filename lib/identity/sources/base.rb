@@ -36,7 +36,8 @@ module Identity::Sources
     end
 
     def remap(data)
-      Hash[*(data || {}).map { |key, value| [map[key], value] if map.key?(key) && value }.compact.flatten]
+      mapped = (data || {}).map { |key, value| [map[key], value] if map.key?(key) && value }
+      Hash[*mapped.compact.flatten].merge(:source_url => data['source_url'])
     end
   end
 end

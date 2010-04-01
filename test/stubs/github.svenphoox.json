@@ -1,6 +1,7 @@
 {
   "user": { 
-    "login": "svenphoox",
-    "name" : "Sven" 
+    "login"      : "svenphoox",
+    "name"       : "Sven",
+    "source_url" :"http://github.com/api/v2/json/user/show/svenphoox"
   }
 }

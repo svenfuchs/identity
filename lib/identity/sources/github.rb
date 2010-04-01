@@ -10,7 +10,7 @@ module Identity::Sources
         'blog'     => 'url',
         'location' => 'location',
         'company'  => 'company',
-        'gravatar' => 'gravatar_id'
+        'avatar'   => 'avatar'
       }
     end
     
@@ -27,7 +27,9 @@ module Identity::Sources
     end
 
     def fetch(source_url)
-      remap(Base.get(source_url)['user'])
+      data = Base.get(source_url)['user']
+      data['avatar'] = "http:gravatar.com/avatar/#{data.delete('gravatar_id')}" if data.key?('gravatar_id')
+      remap(data)
     end
   end
 end

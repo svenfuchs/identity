@@ -11,6 +11,7 @@
     "following_count":10,
     "followers_count":92,
     "login":"svenfuchs",
-    "email":"svenfuchs@artweb-design.de"
+    "email":"svenfuchs@artweb-design.de",
+    "source_url":"http://github.com/api/v2/json/user/show/svenfuchs"
   }
 }

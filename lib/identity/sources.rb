@@ -15,7 +15,7 @@ module Identity::Sources
     end
     
     def [](name)
-      all[name]
+      all[name.to_s]
     end
 
     def map(&block) # use Enumerable
@@ -35,19 +35,25 @@ module Identity::Sources
     end
 
     def update_all(identity, arguments)
-      arguments.each { |arg| arg.starts_with?('http://') ? update_url(identity, arg) : update_named(identity, arg) }
+      arguments.each do |arg| 
+        arg.starts_with?('http://') ? update_from_url(identity, arg) : update_from_named(identity, arg)
+      end
     end
     
-    def update_url(identity, url)
+    def update_from_url(identity, url)
       each { |name, source| handle = source.recognize_url(url) and return source.update(identity, handle) }
       all['json'].update(identity, url)
     end
 
-    def update_named(identity, arg)
-      ix    = arg.index(':')
-      name  = arg[0..ix - 1]
-      value = arg[ix + 1..-1]
-      self[name].update(identity, value)
+    def update_from_named(identity, arg)
+      ix     = arg.index(':')
+      source = arg[0..ix - 1]
+      handle = arg[ix + 1..-1]
+      update_from_source(identity, source, handle)
+    end
+    
+    def update_from_source(identity, source, handle)
+      self[source].update(identity, handle) if handle
     end
   end
 end

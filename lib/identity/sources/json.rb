@@ -1,11 +1,10 @@
 module Identity::Sources
   class Json < Base
     def update(identity, url)
-      identity.set_profile('json', fetch(url))
+      json = identity.set_profile('json', fetch(url))
 
-      Identity::Sources.each_without('json') do |name, source|
-        source.update(identity, identity.json[name]) if identity.json[name]
-      end if identity.json
+      # i.e. when the json defines a github handle, we'll pull the github profile
+      Identity::Sources.update_from_source(identity, 'github', json['github']) if json
     end
 
     def profile_url(profile)
