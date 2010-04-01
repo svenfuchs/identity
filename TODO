@@ -1,0 +1,35 @@
+- views:
+
+  /
+  => just list handles and link to show :handle views
+
+  /:handle
+  => list all known information about /:handle
+
+  /messages
+  => list processed messages
+  
+  /groups/:name
+  => list people who joined to the group :name
+  
+- app/routing:
+  make sure / returns the same stuff as /index
+  make sure /index.json returns the same json file as requesting /index with accept=json
+  
+- security: 
+  sanitize data from remote sources
+
+- implement commands:
+  # let people log that they are going to attend or attended a rugb meeting
+  !attend [date'ish|today|next|last]
+  
+  # let people announce that they are going to visit or visited rubg (i.e. Berlin)
+  !attend from:[date'ish] to:[date'ish]
+
+- pull request for HTTParty (see lib/httparty_fix.rb)
+
+
+
+... at some point ...
+
+- allow more than just one group account (e.g. @rugb) to be managed (e.g. @upfront)
